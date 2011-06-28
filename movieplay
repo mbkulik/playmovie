@@ -5,6 +5,37 @@ require 'optparse'
 require 'open-uri'
 require 'nokogiri'
 
+#---------------------------------------------------------------
+# listmovies - prints out the list of movies
+#---------------------------------------------------------------
+def get_user_selection( movies )
+	good_input = false
+	selection = -1
+
+	until good_input
+		movies.keys.sort.each do |key|
+			puts "#{key} #{movies[key]}"
+		end
+
+		print "Which movie do you want to watch (enter the number or q to quit)? "
+		selection = gets.chomp
+
+		if selection == "q"
+			exit
+		end
+
+		if movies.has_key? selection.to_i
+			good_input = true
+		end
+	end
+
+	return movies[selection.to_i]
+end
+
+#---------------------------------------------------------------
+# parses command line option
+#---------------------------------------------------------------
+
 options = {}
 
 optparse = OptionParser.new do |opts|
@@ -34,10 +65,19 @@ end
 
 optparse.parse!
 
+#---------------------------------------------------------------
+# connect to server and parse xml
+#---------------------------------------------------------------
+
 connection = "http://#{options[:server]}:#{options[:port]}/movielist"
 
-doc = Nokogiri::XML(open(connection)) do |config|
-	config.strict
+begin
+	doc = Nokogiri::XML(open(connection)) do |config|
+		config.strict
+	end
+rescue Exception=>e
+	puts "Exception Occured: #{e}"
+	exit 1
 end
 
 css = "#{options[:type]} title"
@@ -46,16 +86,21 @@ movie_dict = Hash.new
 
 i = 1
 doc.css(css).each do |title|
-	puts i.to_s + " " + title.content
-	movie_dict[i.to_s] = title.content
+	movie_dict[i] = title.content
 	i += 1
 end
 
-print "Which movie do you want to watch (enter the number)?"
-selection = gets.chomp
+#---------------------------------------------------------------
+# get selection from the user and play movie via ffplay on obsd,
+# open on macosx
+#---------------------------------------------------------------
 
-file_path = "http://#{options[:server]}:#{options[:port]}/#{movie_dict[selection]}"
+film = get_user_selection movie_dict
 
-puts file_path
+file_path = "http://#{options[:server]}:#{options[:port]}/#{film}"
 
-system("ffplay #{file_path}")
+if RUBY_PLATFORM =~ /darwin/
+	system("open #{file_path}")
+else
+	system("ffplay #{file_path}")
+end

@@ -101,6 +101,8 @@ file_path = "http://#{options[:server]}:#{options[:port]}/#{film}"
 
 if RUBY_PLATFORM =~ /darwin/
 	system("open #{file_path}")
+elsif RUBY_PLATFORM =~ /linux/
+	system("totem #{file_path}")
 else
 	system("ffplay #{file_path}")
 end

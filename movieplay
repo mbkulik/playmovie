@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'optparse'
 require 'open-uri'
-require 'nokogiri'
+require 'json'
 
 #---------------------------------------------------------------
 # listmovies - prints out the list of movies
@@ -72,22 +72,25 @@ optparse.parse!
 connection = "http://#{options[:server]}:#{options[:port]}/movielist"
 
 begin
-	doc = Nokogiri::XML(open(connection)) do |config|
-		config.strict
-	end
-rescue Exception=>e
-	puts "Exception Occured: #{e}"
-	exit 1
+    url = open( connection ).read
+    movies = JSON.parse( url)
+rescue Exception => e
+    puts "Exception Occured: #{e}"
+    exit 1
 end
 
-css = "#{options[:type]} title"
 
-movie_dict = Hash.new
+movie_choices  = Hash.new
+type = ".#{options[:type]}"
+
+puts type
 
 i = 1
-doc.css(css).each do |title|
-	movie_dict[i] = title.content
-	i += 1
+movies.each do | key, value |
+    if value.include?( type )
+        movie_choices[i] = "#{key}#{type}"
+        i += 1
+    end
 end
 
 #---------------------------------------------------------------
@@ -95,7 +98,7 @@ end
 # open on macosx
 #---------------------------------------------------------------
 
-film = get_user_selection movie_dict
+film = get_user_selection movie_choices
 
 file_path = "http://#{options[:server]}:#{options[:port]}/#{film}"
 

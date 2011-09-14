@@ -83,8 +83,6 @@ end
 movie_choices  = Hash.new
 type = ".#{options[:type]}"
 
-puts type
-
 i = 1
 movies.each do | key, value |
     if value.include?( type )

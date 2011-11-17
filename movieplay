@@ -73,7 +73,7 @@ connection = "http://#{options[:server]}:#{options[:port]}/movielist"
 
 begin
     url = open( connection ).read
-    movies = JSON.parse( url)
+    movies = JSON.parse( url )
 rescue Exception => e
     puts "Exception Occured: #{e}"
     exit 1
@@ -84,9 +84,9 @@ movie_choices  = Hash.new
 type = ".#{options[:type]}"
 
 i = 1
-movies.each do | key, value |
-    if value.include?( type )
-        movie_choices[i] = "#{key}#{type}"
+movies.each do | vid |
+    if File.extname( vid ) == type
+        movie_choices[i] = vid
         i += 1
     end
 end

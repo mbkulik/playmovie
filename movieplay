@@ -101,9 +101,16 @@ film = get_user_selection movie_choices
 file_path = "http://#{options[:server]}:#{options[:port]}/#{film}"
 
 if RUBY_PLATFORM =~ /darwin/
-	system("open #{file_path}")
+
+    if File.exists?("/Applications/VLC.app/")
+        system("open /Applications/VLC.app/ --args #{file_path}")
+    else
+        system("open #{file_path}")
+    end
+    
 elsif RUBY_PLATFORM =~ /linux/
 	system("totem #{file_path}")
+
 else
 	system("ffplay #{file_path}")
 end

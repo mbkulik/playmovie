@@ -1,0 +1,7 @@
+A simple script to watch movies on platforms with poor HTML5 video playback from a system running moviestreamer.
+
+Tested Platforms:
+
+Mac OS X 10.6.8 with VLC
+Ubuntu 12.04 using totem
+OpenBSD 5.0/5.1 amd64 using ffplay

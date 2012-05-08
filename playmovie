@@ -1,12 +1,23 @@
 #!/usr/bin/env ruby
 
+#---------------------------------------------------------------
+#
+# Michael B. Kulik
+# 05/08/2012
+#
+# 
+#
+#
+#---------------------------------------------------------------
+
 require 'rubygems'
 require 'optparse'
 require 'open-uri'
 require 'json'
 
 #---------------------------------------------------------------
-# listmovies - prints out the list of movies
+# get_user_selection - returns the movie the user wants to watch
+# or quits the program
 #---------------------------------------------------------------
 def get_user_selection( movies )
 	good_input = false
@@ -66,7 +77,7 @@ end
 optparse.parse!
 
 #---------------------------------------------------------------
-# connect to server and parse xml
+# connect to server retrieves the list of movies in JSON
 #---------------------------------------------------------------
 
 connection = "http://#{options[:server]}:#{options[:port]}/movielist"
@@ -92,8 +103,11 @@ movies.each do | vid |
 end
 
 #---------------------------------------------------------------
-# get selection from the user and play movie via ffplay on obsd,
-# open on macosx
+# get selection from the user and plays the movie
+#
+# uses VLC on OS X or falls back on open command
+# uses totem on linux
+# uses ffplay on everything else
 #---------------------------------------------------------------
 
 film = get_user_selection movie_choices

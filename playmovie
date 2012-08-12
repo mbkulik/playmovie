@@ -1,15 +1,5 @@
 #!/usr/bin/env ruby
 
-#---------------------------------------------------------------
-#
-# Michael B. Kulik
-# 05/08/2012
-#
-# 
-#
-#
-#---------------------------------------------------------------
-
 require 'rubygems'
 require 'optparse'
 require 'open-uri'
@@ -80,7 +70,7 @@ optparse.parse!
 # connect to server retrieves the list of movies in JSON
 #---------------------------------------------------------------
 
-connection = "http://#{options[:server]}:#{options[:port]}/movielist"
+connection = "http://#{options[:server]}:#{options[:port]}/json"
 
 begin
     url = open( connection ).read
